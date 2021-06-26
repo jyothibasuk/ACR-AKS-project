@@ -11,7 +11,7 @@ pipeline {
         stage ('checkout') {
 
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/acr']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/jyothibasu/acr-aks-project.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/jyothibasu/acr-aks-project.git']]])
             }
         }
 
@@ -43,7 +43,7 @@ pipeline {
             }
         }
         
-        stage('Acr-Build & Push image'){
+        stage('ACR-Build & Push image'){
             steps {
                 withCredentials([usernamePassword(credentialsId: 'acr_cred', passwordVariable: 'acrpswd', usernameVariable: 'aksacrtcspoc')]) {
                     sh "docker login aksacrtcspoc.azurecr.io -u $aksacrtcspoc -p $acrpswd"
