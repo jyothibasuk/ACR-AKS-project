@@ -2,12 +2,16 @@ pipeline {
 
     agent any
 
+    environment {
+        registry = "aksacrtcspoc.azurecr.io"
+    }
+
     stages {
 
         stage ('checkout') {
 
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/jyothibasu/hello-world.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/acr']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/jyothibasu/hello-world.git']]])
             }
         }
 
@@ -39,16 +43,24 @@ pipeline {
             }
         }
         
+<<<<<<< HEAD
         stage('Docker Build & Push image'){
+=======
+        stage('Acr-Build & Push image'){
+>>>>>>> acr
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker_cred', passwordVariable: 'dockerhubpassword', usernameVariable: 'dockerhubuser')]) {
-                    sh "docker login -u $dockerhubuser -p $dockerhubpassword"
+                withCredentials([usernamePassword(credentialsId: 'acr_cred', passwordVariable: 'acrpswd', usernameVariable: 'aksacrtcspoc')]) {
+                    sh "docker login aksacrtcspoc.azurecr.io -u $aksacrtcspoc -p $acrpswd"
                 }
                 sh '''docker build -t poc-1:v1.$BUILD_ID .
-                docker tag poc-1:v1.$BUILD_ID jyothibasuk/poc-1:v1.$BUILD_ID
-                docker push jyothibasuk/poc-1:v1.$BUILD_ID
+                docker tag poc-1:v1.$BUILD_ID $registry/poc-1:v1.$BUILD_ID
+                docker push $registry/poc-1:v1.$BUILD_ID
                 docker rmi poc-1:v1.$BUILD_ID
+<<<<<<< HEAD
                 docker rmi jyothibasuk/poc-1:v1.$BUILD_ID''' 
+=======
+                docker rmi $registry/poc-1:v1.$BUILD_ID'''
+>>>>>>> acr
             }
         }
 
@@ -58,7 +70,7 @@ pipeline {
                 script {
                     
                     kubernetesDeploy(
-                    configs: 'aks-deployment.yaml',
+                    configs: 'acr-deployment.yaml',
                     kubeconfigId: 'k8s-cluster',
                     ) 
                 }
