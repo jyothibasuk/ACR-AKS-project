@@ -43,11 +43,7 @@ pipeline {
             }
         }
         
-<<<<<<< HEAD
-        stage('Docker Build & Push image'){
-=======
         stage('Acr-Build & Push image'){
->>>>>>> acr
             steps {
                 withCredentials([usernamePassword(credentialsId: 'acr_cred', passwordVariable: 'acrpswd', usernameVariable: 'aksacrtcspoc')]) {
                     sh "docker login aksacrtcspoc.azurecr.io -u $aksacrtcspoc -p $acrpswd"
@@ -56,11 +52,7 @@ pipeline {
                 docker tag poc-1:v1.$BUILD_ID $registry/poc-1:v1.$BUILD_ID
                 docker push $registry/poc-1:v1.$BUILD_ID
                 docker rmi poc-1:v1.$BUILD_ID
-<<<<<<< HEAD
-                docker rmi jyothibasuk/poc-1:v1.$BUILD_ID''' 
-=======
                 docker rmi $registry/poc-1:v1.$BUILD_ID'''
->>>>>>> acr
             }
         }
 
